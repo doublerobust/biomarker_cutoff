@@ -97,7 +97,7 @@ tr:last-child td { border-bottom: none; }
 <div class="container">
   <h1>Biomarker Cutoff Precision</h1>
   <p class="subtitle">
-    N &le; 240 &middot; <strong>25000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 16 N values &middot; parallelized on 12 cores
+    N &le; 240 &middot; <strong>25000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 16 N values &middot; min_enriched=5, min_fraction=0.20
   </p>
   <div class="tabs" id="tabContainer"></div>
   <div id="panelContainer"></div>

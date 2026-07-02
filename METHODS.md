@@ -66,7 +66,7 @@ ORR ≈ 16.4%).
 The lowest observed biomarker threshold where the enriched subgroup (patients
 at or above that threshold) simultaneously meets:
 
-1. **Size ≥ max(20, 15% × N)**
+1. **Size ≥ max(5, 20% × N)**
 2. **Observed ORR ≥ target_orr**
 
 If no threshold satisfies both, the cutoff is undefined (NA).
@@ -75,11 +75,7 @@ If no threshold satisfies both, the cutoff is undefined (NA).
 
 The "true" cutoff is computed once per scenario from 200,000 patients using
 the continuous response *probability* (not binary outcomes), with the same
-rule parameters (min_enriched=20, min_fraction=0.15). For the population,
-min_n = max(20, 200000 × 0.15) = 30000, which is more stringent than for
-small trials. However, for all scenarios tested, the population-level
-enrichment is strong enough that the 30000-patient constraint does not change
-the estimated cutoff compared to an unconstrained estimate.
+rule parameters (min_enriched=5, min_fraction=0.20).
 
 ## Success rate definition
 

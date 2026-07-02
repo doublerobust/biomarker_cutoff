@@ -24,7 +24,7 @@ simulate_trial <- function(n, cutoff = 40, low_orr = 0.08, high_orr = 0.35,
 }
 
 estimate_cutoff <- function(marker, response, target_orr = 0.30,
-                            min_enriched = 20, min_fraction = 0.15) {
+                            min_enriched = 5, min_fraction = 0.20) {
   ord <- order(marker, decreasing = TRUE)
   marker <- marker[ord]
   response <- response[ord]
@@ -74,7 +74,7 @@ population_cutoff <- function(target_orr, min_enriched, min_fraction,
 run_bench <- function(sample_sizes = c(60, 80, 100, 120, 150, 200),
                       sims = 500, boot = 200, biology_cutoff = 60,
                       cutoff_tolerance = 10, target_orr = 0.30,
-                      min_enriched = 20, min_fraction = 0.15,
+                      min_enriched = 5, min_fraction = 0.20,
                       seed = 20260701, return_details = FALSE) {
   set.seed(seed)
   true_cutoff <- population_cutoff(target_orr, min_enriched, min_fraction,
