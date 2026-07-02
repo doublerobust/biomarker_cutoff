@@ -14,7 +14,7 @@ See `app.html` for the interactive results.
 
 Open **`app.html`** in a browser. Four tabs (AUC ≈ 0.60 / 0.65 / 0.70 / 0.75),
 each showing success rate vs N for three ORR levels (≈10%, ≈18%, ≈25%).
-5000 simulations per scenario. AUC and ORR labels are approximate calibrated
+10000 simulations per scenario. AUC and ORR labels are approximate calibrated
 targets.
 
 ## Quick reference
@@ -23,15 +23,15 @@ N needed for 50% success (first N where success rate ≥ 50%):
 
 | AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
-| 0.60 | >240 | 220 | 140 |
-| 0.65 | 160 | 100 | 90 |
-| 0.70 | 100 | 80 | 70 |
+| 0.60 | >240 | 200 | 120 |
+| 0.65 | 180 | 100 | 90 |
+| 0.70 | 120 | 80 | 70 |
 | 0.75 | 90 | 70 | 70 |
 
 ## Reproduce
 
 ```sh
-Rscript gen_data.R          # 960,000 simulations, parallelized
+Rscript gen_data.R          # 1,920,000 simulations, parallelized
 Rscript gen_app.R           # builds app.html from plot_data.rds
 ```
 

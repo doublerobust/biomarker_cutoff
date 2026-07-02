@@ -38,8 +38,8 @@ and AUCs while keeping the underlying biomarker distribution fixed.
 
 ## Scenarios tested
 
-4 AUC levels × 3 ORR levels = 12 scenarios, 16 N values (20–240), **5000
-simulations per scenario** (960,000 total, parallelized on 12 cores).
+4 AUC levels × 3 ORR levels = 12 scenarios, 16 N values (20–240), **10000
+simulations per scenario** (1,920,000 total, parallelized on 12 cores).
 
 AUC and ORR labels are approximate calibrated targets. Actual population
 values may differ slightly (e.g., a labeled "AUC=0.75" scenario may have
@@ -94,9 +94,9 @@ target ORR.
 
 | AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
-| 0.60 | >240 | 220 | 140 |
-| 0.65 | 160 | 100 | 90 |
-| 0.70 | 100 | 80 | 70 |
+| 0.60 | >240 | 200 | 120 |
+| 0.65 | 180 | 100 | 90 |
+| 0.70 | 120 | 80 | 70 |
 | 0.75 | 90 | 70 | 70 |
 
 ### N needed for 65% success (first N where success rate ≥ 65%)
@@ -104,9 +104,9 @@ target ORR.
 | AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
 | 0.60 | >240 | >240 | >240 |
-| 0.65 | >240 | 200 | 160 |
+| 0.65 | >240 | 180 | 160 |
 | 0.70 | 200 | 120 | 90 |
-| 0.75 | 160 | 90 | 80 |
+| 0.75 | 180 | 90 | 80 |
 
 ## Key finding
 
