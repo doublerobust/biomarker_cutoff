@@ -5,10 +5,10 @@ to reliably estimate a biomarker enrichment cutoff?**
 
 ## Summary
 
-Lower ORR generally requires larger N because responders are sparse. Cutoff
-precision depends on the full trial design: total N, expected responder count,
-biomarker discrimination (AUC), and the minimum enriched subgroup constraint.
-See `app.html` for the interactive results.
+In these calibrated scenarios, lower ORR generally required larger N to
+reach the same cutoff precision. Responder scarcity is a likely contributor,
+but precision also depends on AUC, target ORR, the enriched-subgroup
+constraint, and total N. See `app.html` for the interactive results.
 
 ## Interactive webapp
 
@@ -38,15 +38,13 @@ Rscript gen_app.R           # builds app.html from plot_data.rds
 Requires R ≥ 4.0 with packages `jsonlite`, `parallel`. Local packages in
 `.Rlib/`.
 
-## Methodology note: model-based approach explored
+## Methodology note: model-based approach considered
 
-We tested a logistic regression-based cutoff estimator (`glm(response ~
-marker)`) intending to smooth out Bernoulli noise. It performed worse than
-the raw-data approach across all scenarios — the clamped response curve
-(floor/ceiling effects) and IHC measurement error (SD=7) create features a
-simple linear-logistic model cannot capture, introducing bias. The raw
-approach (counting observed responders above each threshold) is unbiased
-and was retained. See `METHODS.md` for details.
+A logistic regression-based cutoff estimator (`glm(response ~ marker)`) was
+considered but performed worse in an exploratory run — the clamped response
+curve and IHC measurement error create features a linear-logistic model
+cannot capture. The raw approach (counting observed responders above each
+threshold) was retained. See `METHODS.md` for details.
 
 ## Files
 

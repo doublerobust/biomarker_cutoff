@@ -74,7 +74,7 @@ tr:last-child td { border-bottom: none; }
 <div class="container">
   <h1>Biomarker Cutoff Precision</h1>
   <p class="subtitle">
-    N = 40&ndash;240 &middot; <strong>50000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 16 N values &middot; min_enriched=5, min_fraction=0.20
+    N = 40&ndash;240 &middot; <strong>50000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 14 N values &middot; min_enriched=5, min_fraction=0.20
   </p>
   <div class="tabs" id="tabContainer"></div>
   <div id="panelContainer"></div>
@@ -182,7 +182,7 @@ function renderPanel(auc) {
     </table>` +
     `<div style="margin-top:8px;font-size:12px;color:#64748b;">` +
     `Lower ORR &rarr; fewer responders at the same N &rarr; worse cutoff precision. ` +
-    `To compensate, you need proportionally larger N.` +
+    `Lower ORR trials need larger N to reach the same number of responders.` +
     `</div>`;
 }
 
