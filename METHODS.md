@@ -114,6 +114,26 @@ However, cutoff precision is not solely a function of responder count.
 Trial design factors — total N, the minimum enriched subgroup constraint
 (min_n = max(5, 20% × N)), and the target ORR — all interact.
 
+## Alternative approaches explored
+
+We tested a GLM-based cutoff estimator that fits `glm(response ~ marker,
+family = binomial)` and uses the model's smoothed predicted probabilities
+instead of raw binary outcomes in the cumulative ORR calculation. The goal
+was to reduce noise from Bernoulli sampling.
+
+**Result:** The GLM approach performed worse across all scenarios. Success
+rates dropped by roughly half compared to the raw-data approach. The cause
+is model misspecification: the true response curve is clamped at `low_orr`
+and `high_orr` (creating flat floor/ceiling regions), and the observed
+marker has measurement error (SD=7) that further attenuates the logistic
+coefficient via regression dilution. A simple linear-logistic model cannot
+capture these features, introducing bias that outweighs any variance
+reduction.
+
+The raw-data approach — counting observed responders above each threshold
+— makes no shape assumptions and is unbiased. It was retained for the final
+benchmark.
+
 ## Limitations
 
 - Single-arm design (no control arm, no PFS/OS endpoint).

@@ -38,6 +38,7 @@ estimate_cutoff <- function(marker, response, target_orr = 0.30,
   min(candidates[keep])
 }
 
+
 bootstrap_metrics <- function(dat, target_orr, min_enriched, min_fraction,
                               boot = 200) {
   n <- nrow(dat)

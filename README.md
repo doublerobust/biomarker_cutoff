@@ -38,6 +38,16 @@ Rscript gen_app.R           # builds app.html from plot_data.rds
 Requires R ≥ 4.0 with packages `jsonlite`, `parallel`. Local packages in
 `.Rlib/`.
 
+## Methodology note: model-based approach explored
+
+We tested a logistic regression-based cutoff estimator (`glm(response ~
+marker)`) intending to smooth out Bernoulli noise. It performed worse than
+the raw-data approach across all scenarios — the clamped response curve
+(floor/ceiling effects) and IHC measurement error (SD=7) create features a
+simple linear-logistic model cannot capture, introducing bias. The raw
+approach (counting observed responders above each threshold) is unbiased
+and was retained. See `METHODS.md` for details.
+
 ## Files
 
 | File | Purpose |
