@@ -27,7 +27,7 @@ run_bench2 <- function(sample_sizes, sims, target_orr, low_orr, high_orr,
   do.call(rbind, rows)
 }
 
-ns <- c(seq(20, 100, 10), seq(120, 250, 20))
+ns <- c(seq(40, 100, 10), seq(120, 240, 20))
 
 scenarios <- list(
   list(auc="0.60", orr="10%", lo=0.08, hi=0.20, t=0.15),
@@ -45,11 +45,11 @@ scenarios <- list(
 )
 
 cat(sprintf("Running %d scenarios on %d cores, %d sims each...\n",
-    length(scenarios), detectCores(), 25000))
+    length(scenarios), detectCores(), 50000))
 
 results <- mclapply(scenarios, function(sc) {
   cat(sprintf("[pid %d] AUC=%s ORR=%s ...\n", Sys.getpid(), sc$auc, sc$orr))
-  d <- run_bench2(ns, 25000, sc$t, sc$lo, sc$hi, 5, 0.20, 20260701)
+  d <- run_bench2(ns, 50000, sc$t, sc$lo, sc$hi, 5, 0.20, 20260701)
   d$auc_group <- sc$auc
   d$orr_label <- sc$orr
   d$combo_label <- sprintf("AUC=%s ORR=%s", sc$auc, sc$orr)

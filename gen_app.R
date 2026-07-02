@@ -97,7 +97,7 @@ tr:last-child td { border-bottom: none; }
 <div class="container">
   <h1>Biomarker Cutoff Precision</h1>
   <p class="subtitle">
-    N &le; 240 &middot; <strong>25000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 16 N values &middot; min_enriched=5, min_fraction=0.20
+    N = 40&ndash;240 &middot; <strong>50000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 16 N values &middot; min_enriched=5, min_fraction=0.20
   </p>
   <div class="tabs" id="tabContainer"></div>
   <div id="panelContainer"></div>
@@ -130,7 +130,7 @@ function buildPanels() {
     return `<div class="panel" id="panel-${a}">
       <div class="panel-header">
         <h2>AUC = ${a} &mdash; ${AUC_DESC[a]} discrimination</h2>
-        <p>ORR scenarios: ${orrs} <span class="sim-badge">5000 sims each</span></p>
+        <p>ORR scenarios: ${orrs} <span class="sim-badge">50000 sims each</span></p>
       </div>
       <div class="chart-box">
         <h3>Success rate vs total sample size (N)</h3>
