@@ -17,8 +17,7 @@ true_marker ~ 100 × Beta(α=1.4, β=2.2)
 
 Right-skewed (mean ~39, range 0–100), mimicking IHC H-scores where most
 patients have low-to-moderate expression. The enriched subgroup (above the
-estimated cutoff) is consistently ~35% of the population — matching real
-oncology biomarkers like PD-L1 TPS at the 50% threshold.
+estimated cutoff) is consistently ~35% of the population.
 
 The observed assay value adds Gaussian measurement noise:
 
@@ -39,23 +38,28 @@ and AUCs while keeping the underlying biomarker distribution fixed.
 
 ## Scenarios tested
 
-4 AUC levels × 3 ORR levels = 12 scenarios, 16 N values each, **5000
+4 AUC levels × 3 ORR levels = 12 scenarios, 16 N values (20–240), **5000
 simulations per scenario** (960,000 total, parallelized on 12 cores).
 
-| AUC | Discrimination | low_orr → high_orr | ORR | Target ORR |
-|-----|---------------|-------------------|-----|-----------|
-| 0.60 | Weak | 8% → 20% | 10% | 15% |
-| 0.60 | Weak | 13% → 30% | 18% | 23% |
-| 0.60 | Weak | 20% → 45% | 25% | 34% |
-| 0.65 | Moderate | 7% → 25% | 10% | 17% |
-| 0.65 | Moderate | 12% → 40% | 18% | 28% |
-| 0.65 | Moderate | 17% → 50% | 25% | 36% |
-| 0.70 | Good | 6% → 30% | 10% | 20% |
-| 0.70 | Good | 11% → 50% | 18% | 33% |
-| 0.70 | Good | 15% → 65% | 25% | 43% |
-| 0.75 | Strong | 4% → 30% | 10% | 19% |
-| 0.75 | Strong | 8% → 55% | 18% | 35% |
-| 0.75 | Strong | 12% → 70% | 25% | 45% |
+AUC and ORR labels are approximate calibrated targets. Actual population
+values may differ slightly (e.g., a labeled "AUC=0.75" scenario may have
+population AUC ≈ 0.74; a labeled "ORR=18%" scenario may have population
+ORR ≈ 16.4%).
+
+| AUC (label) | low_orr → high_orr | ORR (label) | Target ORR |
+|-------------|-------------------|-------------|-----------|
+| 0.60 | 8% → 20% | 10% | 15% |
+| 0.60 | 13% → 30% | 18% | 23% |
+| 0.60 | 20% → 45% | 25% | 34% |
+| 0.65 | 7% → 25% | 10% | 17% |
+| 0.65 | 12% → 40% | 18% | 28% |
+| 0.65 | 17% → 50% | 25% | 36% |
+| 0.70 | 6% → 30% | 10% | 20% |
+| 0.70 | 11% → 50% | 18% | 33% |
+| 0.70 | 15% → 65% | 25% | 43% |
+| 0.75 | 4% → 30% | 10% | 19% |
+| 0.75 | 8% → 55% | 18% | 35% |
+| 0.75 | 12% → 70% | 25% | 45% |
 
 ## Cutoff estimation rule
 
@@ -70,8 +74,12 @@ If no threshold satisfies both, the cutoff is undefined (NA).
 ## Population truth
 
 The "true" cutoff is computed once per scenario from 200,000 patients using
-the continuous response *probability* (not binary outcomes). This is the
-threshold the rule would converge to with infinite data.
+the continuous response *probability* (not binary outcomes), with the same
+rule parameters (min_enriched=20, min_fraction=0.15). For the population,
+min_n = max(20, 200000 × 0.15) = 30000, which is more stringent than for
+small trials. However, for all scenarios tested, the population-level
+enrichment is strong enough that the 30000-patient constraint does not change
+the estimated cutoff compared to an unconstrained estimate.
 
 ## Success rate definition
 
@@ -82,30 +90,35 @@ target ORR.
 
 ## Results
 
-### N needed for 50% success
+### N needed for 50% success (first N where success rate ≥ 50%)
 
-| AUC | ORR 10% | ORR 18% | ORR 25% |
+| AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
-| 0.60 | >250 | 220 | 140 |
+| 0.60 | >240 | 220 | 140 |
 | 0.65 | 160 | 100 | 90 |
 | 0.70 | 100 | 80 | 70 |
 | 0.75 | 90 | 70 | 70 |
 
-### N needed for 65% success
+### N needed for 65% success (first N where success rate ≥ 65%)
 
-| AUC | ORR 10% | ORR 18% | ORR 25% |
+| AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
-| 0.60 | >250 | >250 | 240 |
-| 0.65 | >250 | 180 | 140 |
-| 0.70 | 180 | 100 | 80 |
-| 0.75 | 160 | 80 | 70 |
+| 0.60 | >240 | >240 | >240 |
+| 0.65 | >240 | 200 | 160 |
+| 0.70 | 200 | 120 | 90 |
+| 0.75 | 160 | 90 | 80 |
 
 ## Key finding
 
-At the same AUC, the N needed for a given success rate varies substantially
-with ORR. Lower ORR → fewer responders at the same N → worse precision. The
-responder heuristic (plan for expected responders = ORR × N) is robust across
-ORR levels; the N heuristic is not.
+At the same AUC, lower ORR generally requires larger N to reach the same
+success rate. This is because lower ORR → fewer responders at the same N →
+less information to pin down the cutoff.
+
+However, cutoff precision is not solely a function of responder count.
+Trial design factors — total N, the minimum enriched subgroup constraint
+(min_n = max(20, 15% × N)), and the target ORR — all interact. At very small
+N where the min_n constraint binds, even a high-ORR trial can struggle
+because the rule cannot form a valid enriched subgroup.
 
 ## Limitations
 
@@ -114,3 +127,4 @@ ORR levels; the N heuristic is not.
 - ORR-enrichment rule only; Youden-optimal or maximally selected rank
   statistics may behave differently.
 - Assumes monotonic biomarker–response relationship.
+- AUC and ORR labels are approximate calibrated targets, not exact values.
