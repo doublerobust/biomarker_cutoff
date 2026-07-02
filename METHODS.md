@@ -38,8 +38,8 @@ and AUCs while keeping the underlying biomarker distribution fixed.
 
 ## Scenarios tested
 
-4 AUC levels × 3 ORR levels = 12 scenarios, 16 N values (20–240), **25000
-simulations per scenario** (4,800,000 total, parallelized on 12 cores).
+4 AUC levels × 3 ORR levels = 12 scenarios, 14 N values (40–240), **50000
+simulations per scenario** (8,400,000 total, parallelized on 12 cores).
 
 AUC and ORR labels are approximate calibrated targets. Actual population
 values may differ slightly (e.g., a labeled "AUC=0.75" scenario may have
@@ -91,18 +91,18 @@ target ORR.
 | AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
 | 0.60 | >240 | 220 | 140 |
-| 0.65 | 160 | 100 | 90 |
-| 0.70 | 100 | 80 | 70 |
-| 0.75 | 90 | 70 | 70 |
+| 0.65 | 160 | 100 | 80 |
+| 0.70 | 100 | 60 | 50 |
+| 0.75 | 90 | 40 | 40 |
 
 ### N needed for 65% success (first N where success rate ≥ 65%)
 
 | AUC | ORR ≈10% | ORR ≈18% | ORR ≈25% |
 |-----|---------|---------|---------|
 | 0.60 | >240 | >240 | >240 |
-| 0.65 | >240 | 180 | 160 |
-| 0.70 | 200 | 120 | 90 |
-| 0.75 | 180 | 90 | 80 |
+| 0.65 | >240 | 200 | 160 |
+| 0.70 | 200 | 120 | 80 |
+| 0.75 | 180 | 80 | 60 |
 
 ## Key finding
 
@@ -112,9 +112,7 @@ less information to pin down the cutoff.
 
 However, cutoff precision is not solely a function of responder count.
 Trial design factors — total N, the minimum enriched subgroup constraint
-(min_n = max(20, 15% × N)), and the target ORR — all interact. At very small
-N where the min_n constraint binds, even a high-ORR trial can struggle
-because the rule cannot form a valid enriched subgroup.
+(min_n = max(5, 20% × N)), and the target ORR — all interact.
 
 ## Limitations
 
