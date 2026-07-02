@@ -45,11 +45,11 @@ scenarios <- list(
 )
 
 cat(sprintf("Running %d scenarios on %d cores, %d sims each...\n",
-    length(scenarios), detectCores(), 10000))
+    length(scenarios), detectCores(), 25000))
 
 results <- mclapply(scenarios, function(sc) {
   cat(sprintf("[pid %d] AUC=%s ORR=%s ...\n", Sys.getpid(), sc$auc, sc$orr))
-  d <- run_bench2(ns, 10000, sc$t, sc$lo, sc$hi, 20, 0.15, 20260701)
+  d <- run_bench2(ns, 25000, sc$t, sc$lo, sc$hi, 20, 0.15, 20260701)
   d$auc_group <- sc$auc
   d$orr_label <- sc$orr
   d$combo_label <- sprintf("AUC=%s ORR=%s", sc$auc, sc$orr)
