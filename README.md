@@ -12,11 +12,18 @@ constraint, and total N. See `app.html` for the interactive results.
 
 ## Interactive webapp
 
-Open **`app.html`** in a browser. Four tabs (AUC ≈ 0.60 / 0.65 / 0.70 / 0.75),
-each showing success rate vs N for three ORR levels (≈10%, ≈18%, ≈25%).
-50000 simulations per scenario. AUC and ORR labels are approximate calibrated
-targets. The page also includes an interpolated sample-size calculator for
-custom AUC, ORR, and target success values inside the simulated range.
+[![Open in browser](https://img.shields.io/badge/Launch-Calculator-2563eb?logo=github)](https://doublerobust.github.io/biomarker_cutoff/app.html)
+
+Open **`app.html`** in a browser (or click the badge above once GitHub Pages is
+enabled). Four tabs (AUC ≈ 0.60 / 0.65 / 0.70 / 0.75), each showing success
+rate vs N for three ORR levels (≈10%, ≈18%, ≈25%). 50000 simulations per
+scenario. AUC and ORR labels are approximate calibrated targets. The page also
+includes an interpolated sample-size calculator for custom AUC, ORR, and target
+success values inside the simulated range.
+
+**To enable GitHub Pages:** go to repo Settings → Pages → Source: `Deploy from
+a branch`, branch: `main`, folder: `/ (root)`. The calculator will be live at
+the badge URL above.
 
 ## Quick reference
 
