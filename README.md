@@ -15,7 +15,8 @@ constraint, and total N. See `app.html` for the interactive results.
 Open **`app.html`** in a browser. Four tabs (AUC ≈ 0.60 / 0.65 / 0.70 / 0.75),
 each showing success rate vs N for three ORR levels (≈10%, ≈18%, ≈25%).
 50000 simulations per scenario. AUC and ORR labels are approximate calibrated
-targets.
+targets. The page also includes an interpolated sample-size calculator for
+custom AUC, ORR, and target success values inside the simulated range.
 
 ## Quick reference
 
@@ -33,6 +34,24 @@ N needed for 50% success (first N where success rate ≥ 50%):
 ```sh
 Rscript gen_data.R          # 8,400,000 simulations, parallelized
 Rscript gen_app.R           # builds app.html from plot_data.rds
+```
+
+## Quick calculator
+
+Estimate the sample size needed for an interpolated AUC/ORR/success target:
+
+```sh
+Rscript sample_size_calculator.R --auc 0.65 --orr 0.15 --success 0.60
+```
+
+The calculator interpolates over the saved simulation grid. Success means the
+estimated cutoff lands within 10 biomarker points of the population cutoff.
+
+Once the calculator lands near a target, sharpen the estimate with a focused
+high-replication run:
+
+```sh
+Rscript refine_target.R --auc 0.65 --orr 0.15 --success 0.60 --sims 100000
 ```
 
 Requires R ≥ 4.0 with packages `jsonlite`, `parallel`. Local packages in
@@ -54,5 +73,7 @@ threshold) was retained. See `METHODS.md` for details.
 | `biomarker_cutoff_bench.R` | Core simulation engine |
 | `gen_data.R` | Data generation (50000 sims, 12 scenarios, 14 N levels) |
 | `gen_app.R` | Builds HTML from aggregated data |
+| `sample_size_calculator.R` | CLI/helper for interpolated sample size |
+| `refine_target.R` | Focused high-replication run around a target |
 | `plot_data.rds` | Aggregated simulation results |
 | `METHODS.md` | Full simulation methodology |

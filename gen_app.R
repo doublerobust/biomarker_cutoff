@@ -91,6 +91,30 @@ table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13p
 th { background: #f0f7ff; text-align: left; padding: 6px 10px; color: #1e40af; font-weight: 600; }
 td { padding: 5px 10px; border-bottom: 1px solid #e2e8f0; }
 tr:last-child td { border-bottom: none; }
+.calculator {
+  background: #fff; border: 1px solid #dbe3ef; border-radius: 8px;
+  padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.calculator h2 { font-size: 16px; margin-bottom: 12px; }
+.calc-grid { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; align-items: end; }
+.calc-field label { display: block; font-size: 12px; color: #64748b; margin-bottom: 4px; }
+.calc-field input {
+  width: 100%; border: 1px solid #cbd5e1; border-radius: 6px;
+  padding: 8px 10px; font-size: 14px; color: #1e293b; background: #fff;
+}
+.calc-field button {
+  width: 100%; border: none; border-radius: 6px; padding: 9px 12px;
+  background: #2563eb; color: #fff; font-weight: 600; cursor: pointer;
+}
+.calc-result { margin-top: 12px; font-size: 14px; color: #1e293b; }
+.calc-result strong { color: #1e40af; }
+.calc-note { margin-top: 6px; font-size: 12px; color: #64748b; }
+@media (max-width: 720px) {
+  .calc-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 460px) {
+  .calc-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -99,6 +123,28 @@ tr:last-child td { border-bottom: none; }
   <p class="subtitle">
     N = 40&ndash;240 &middot; <strong>50000 sims per scenario</strong> &middot; 4 AUC levels &times; 3 ORR levels &times; 14 N values &middot; min_enriched=5, min_fraction=0.20
   </p>
+  <div class="calculator">
+    <h2>Sample size calculator</h2>
+    <div class="calc-grid">
+      <div class="calc-field">
+        <label for="calcAuc">AUC</label>
+        <input id="calcAuc" type="number" min="0.60" max="0.75" step="0.01" value="0.65">
+      </div>
+      <div class="calc-field">
+        <label for="calcOrr">All-comer ORR (%)</label>
+        <input id="calcOrr" type="number" min="10" max="25" step="1" value="15">
+      </div>
+      <div class="calc-field">
+        <label for="calcSuccess">Target success (%)</label>
+        <input id="calcSuccess" type="number" min="1" max="99" step="1" value="60">
+      </div>
+      <div class="calc-field">
+        <button type="button" onclick="runCalculator()">Calculate</button>
+      </div>
+    </div>
+    <div class="calc-result" id="calcResult"></div>
+    <div class="calc-note">Valid within the simulated grid: AUC 0.60-0.75, ORR 10%-25%, N 40-240. Success means estimated cutoff within &plusmn;10 biomarker points.</div>
+  </div>
   <div class="tabs" id="tabContainer"></div>
   <div id="panelContainer"></div>
 </div>
@@ -112,6 +158,73 @@ const DASHES = [[], [6,3], [2,4]];
 const AUC_ORDER = ["0.60", "0.65", "0.70", "0.75"];
 const AUC_DESC = { "0.60": "weak", "0.65": "moderate", "0.70": "good", "0.75": "strong" };
 let charts = {};
+
+function asNumber(x) { return Number.parseFloat(x); }
+
+function scenarioPoints() {
+  return AUC_ORDER.flatMap(a =>
+    Object.keys(RAW[a]).map(k => ({
+      auc: asNumber(a),
+      orr: asNumber(RAW[a][k].orr_label.replace("%", "")) / 100,
+      n: RAW[a][k].n,
+      success: RAW[a][k].success.map(v => v / 100)
+    }))
+  );
+}
+
+function interp(xs, ys, x) {
+  if (x < xs[0] || x > xs[xs.length - 1]) return NaN;
+  for (let i = 1; i < xs.length; i++) {
+    if (x <= xs[i]) {
+      const t = (x - xs[i - 1]) / (xs[i] - xs[i - 1]);
+      return ys[i - 1] + t * (ys[i] - ys[i - 1]);
+    }
+  }
+  return ys[ys.length - 1];
+}
+
+function interpolatedCurve(auc, orr) {
+  const points = scenarioPoints();
+  const aucs = [...new Set(points.map(p => p.auc))].sort((a, b) => a - b);
+  const orrs = [...new Set(points.map(p => p.orr))].sort((a, b) => a - b);
+  const ns = points[0].n;
+  if (auc < aucs[0] || auc > aucs[aucs.length - 1] || orr < orrs[0] || orr > orrs[orrs.length - 1]) return null;
+
+  const success = ns.map((_, ni) => {
+    const byAuc = aucs.map(a => {
+      const row = orrs.map(o => points.find(p => p.auc === a && p.orr === o).success[ni]);
+      return interp(orrs, row, orr);
+    });
+    return interp(aucs, byAuc, auc);
+  });
+  for (let i = 1; i < success.length; i++) success[i] = Math.max(success[i], success[i - 1]);
+  return { n: ns, success };
+}
+
+function neededN(curve, target) {
+  if (target <= curve.success[0]) return "<=" + curve.n[0];
+  if (target > curve.success[curve.success.length - 1]) return ">" + curve.n[curve.n.length - 1];
+  for (let i = 1; i < curve.n.length; i++) {
+    if (curve.success[i] >= target) {
+      return Math.ceil(interp([curve.success[i - 1], curve.success[i]], [curve.n[i - 1], curve.n[i]], target));
+    }
+  }
+  return ">" + curve.n[curve.n.length - 1];
+}
+
+function runCalculator() {
+  const auc = asNumber(document.getElementById("calcAuc").value);
+  const orr = asNumber(document.getElementById("calcOrr").value) / 100;
+  const target = asNumber(document.getElementById("calcSuccess").value) / 100;
+  const result = document.getElementById("calcResult");
+  const curve = interpolatedCurve(auc, orr);
+  if (!curve || Number.isNaN(target) || target <= 0 || target >= 1) {
+    result.innerHTML = "Enter values inside the simulated ranges.";
+    return;
+  }
+  const n = neededN(curve, target);
+  result.innerHTML = `<strong>Estimated N: ${n}</strong> for AUC ${auc.toFixed(2)}, ORR ${(100 * orr).toFixed(0)}%, ${(100 * target).toFixed(0)}% success`;
+}
 
 function buildTabs() {
   const tc = document.getElementById("tabContainer");
@@ -223,6 +336,7 @@ function switchTab(auc) {
 
 buildTabs();
 buildPanels();
+runCalculator();
 renderPanel("0.60");
 </script>
 </body>
