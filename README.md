@@ -8,13 +8,13 @@ to reliably estimate a biomarker enrichment cutoff?**
 In these calibrated scenarios, lower ORR generally required larger N to
 reach the same cutoff precision. Responder scarcity is a likely contributor,
 but precision also depends on AUC, target ORR, the enriched-subgroup
-constraint, and total N. See `app.html` for the interactive results.
+constraint, and total N. See `index.html` for the interactive results.
 
 ## Interactive webapp
 
-[![Open in browser](https://img.shields.io/badge/Launch-Calculator-2563eb?logo=github)](https://doublerobust.github.io/biomarker_cutoff/app.html)
+[![Open in browser](https://img.shields.io/badge/Launch-Calculator-2563eb?logo=github)](https://doublerobust.github.io/biomarker_cutoff/)
 
-Open **`app.html`** in a browser (or click the badge above once GitHub Pages is
+Open **`index.html`** in a browser (or click the badge above once GitHub Pages is
 enabled). Four tabs (AUC ≈ 0.60 / 0.65 / 0.70 / 0.75), each showing success
 rate vs N for three ORR levels (≈10%, ≈18%, ≈25%). 50000 simulations per
 scenario. AUC and ORR labels are approximate calibrated targets. The page also
@@ -76,7 +76,7 @@ threshold) was retained. See `METHODS.md` for details.
 
 | File | Purpose |
 |------|---------|
-| `app.html` | Interactive webapp (open in browser) |
+| `index.html` | Interactive webapp (open in browser) |
 | `biomarker_cutoff_bench.R` | Core simulation engine |
 | `gen_data.R` | Data generation (50000 sims, 12 scenarios, 14 N levels) |
 | `gen_app.R` | Builds HTML from aggregated data |

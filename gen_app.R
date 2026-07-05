@@ -343,5 +343,5 @@ renderPanel("0.60");
 </html>'
 
 writeLines(c(template_before, "const RAW = ", json_str, ";", template_after),
-           "app.html")
-cat("Written app.html\n")
+           "index.html")
+cat("Written index.html\n")
